@@ -3,6 +3,9 @@ import Note from './compontents/Note'
 import PropTypes from 'prop-types'
 import noteService from './Service/notes'
 import Notification from './compontents/Notification'
+import Footer from './compontents/Footer'
+
+// START SERVER: json-server --port 3001 --watch db.json
 
 
 const App = () => {
@@ -10,7 +13,7 @@ const App = () => {
 const [notes, setNotes] = useState([])
 const [newNote, setNewNote] = useState('')
 const [showAll, setShowAll] = useState(true)
-const [errorMessage, setErrorMessage] = useState('some error happened...')
+const [errorMessage, setErrorMessage] = useState(null)
 
 useEffect(() => {
   noteService
@@ -54,6 +57,16 @@ const toggleImportanceOf = id => {
       setNotes(notes.map(note => note.id !== id ? note :
          returnedNote))
   })
+  // eslint-disable-next-line no-unused-vars
+  .catch(error => {
+      setErrorMessage(
+        `Note '${note.content}' was already removed from server`
+      )
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+      setNotes(notes.filter(n => n.id !== id))
+    })
 }
 
 
@@ -70,8 +83,9 @@ const toggleImportanceOf = id => {
       <ul>
       {notesToShow.map(note =>
         <Note key={note.id} note={note} toggleImportance={() => toggleImportanceOf(note.id)}/>
-        )}
-        <form onSubmit={addNote}>
+        )}  
+      </ul>
+      <form onSubmit={addNote}>
         <input 
           placeholder='Write a note...'
           value={newNote}
@@ -79,7 +93,8 @@ const toggleImportanceOf = id => {
         />
         <button type="submit">Save Note</button>
       </form>   
-      </ul>
+      <Footer />
+
     </div>
   )
 }

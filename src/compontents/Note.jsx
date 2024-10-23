@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 const Note = ({ note, toggleImportance }) => {
   const label = note.important
-    ? 'make not important' : 'make important'
+    ? 'make NOT important' : 'make important'
 
     return (
       <li className="note">
